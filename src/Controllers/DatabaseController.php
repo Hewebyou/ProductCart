@@ -10,10 +10,13 @@ namespace Heesapp\Productcart\Controllers;
 
 use Str;
 use Auth;
+use DB;
 use Heesapp\Productcart\Models\Cart;
 use Heesapp\Productcart\Models\ItemCart;
 use Heesapp\Productcart\Contracts\ProductCartContract;
 use Illuminate\Support\Facades\Cookie;
+use Heesapp\Productcart\Exceptions\ItemMissing;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Description of DatabaseController
@@ -143,7 +146,7 @@ class DatabaseController implements ProductCartContract {
      * 
      */
     public function updateQuantity($id, $quantity) {
-        $CartItem = ItemCart::find($id);
+        $CartItem = ItemCart::where('id', $id)->first();
         $CartItem->quantity = $quantity;
         $CartItem->update();
     }
@@ -155,11 +158,13 @@ class DatabaseController implements ProductCartContract {
      */
     public function getCart() {
 //    
-        $CartDate = Cart::where('cookie', $this->getCookieElement())
+        $CartDate = Cart::with('CartItems')
+                ->where('cookie', $this->getCookieElement())
                 ->where('user_id', $this->getCartIdentification())
                 ->first();
-           
         
+         
+
         if (!$CartDate && Auth::guard(config('productcart.guard_name'))->check()) {
             $CartDate = Cart::where('cookie', $this->getCookieElement())
                     ->first();
@@ -170,13 +175,9 @@ class DatabaseController implements ProductCartContract {
         if (!$CartDate) {
             return [];
         }
-       
-        $CartArray =  $CartDate->toArray();
-        $CartArray['CartItems'] = $CartDate->CartItems;
-        return $CartArray ;
-    }
 
-  
+        return $CartDate->toArray();
+    }
 
     /**
      * getCart Item by id
@@ -208,25 +209,27 @@ class DatabaseController implements ProductCartContract {
      * @return mixed with key  cookie
      */
     private function getCookieElement() {
-
-        if (!request()->hasCookie(config('productcart.cooke_name'))) {
+        if (!request()->hasCookie(config('productcart.cookie_name'))) {
 //create new cookie and assign config file
-            $cookie = Str::random(20);
+            $cookie = Str::random(40);
             $parameters = Cookie::make(
                             config('productcart.cookie_name'),
                             $cookie,
                             config('productcart.cookie_lifetime')
             );
+
             Cookie::queue($parameters);
         } else {
+
             $cookie = Cookie::get(config('productcart.cookie_name'));
         }
+
         return $cookie;
     }
 
     protected function associateUser() {
         $cart = Cart::where('cookie', $this->getCookieElement())->first();
-        $cart->user_id = Auth::guard(config('carts.guard_name'))->id();
+        $cart->user_id = Auth::guard(config('productcart.guard_name'))->id();
         $cart->update();
     }
 

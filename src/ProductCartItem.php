@@ -11,6 +11,7 @@ namespace Heesapp\Productcart;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Heesapp\Productcart\Exceptions\Name_Att_Missing;
+use Heesapp\Productcart\Exceptions\ItemMissing;
 
 /**
  * Description of ProductCartItem
@@ -27,7 +28,7 @@ class ProductCartItem implements Arrayable {
 
     /**
      * Product Model or other 
-     * @var Model
+     * 
      */
     public $model_type;
 
@@ -63,10 +64,10 @@ class ProductCartItem implements Arrayable {
 
     function __construct($data, $quantity) {
         if (is_array($data)) {
-            $this->CreateFromArray($data);
+            return $this->CreateFromArray($data);
         }
 
-        $this->CreateFromModel($data, $quantity);
+        return $this->CreateFromModel($data, $quantity);
     }
 
     /**
@@ -75,7 +76,7 @@ class ProductCartItem implements Arrayable {
      * @param float $quantity 
      * @return \Heesapp\Productcart\ProductCartItem Description
      */
-    private function CreateFromArray($data) {
+    protected function CreateFromArray($data) {
         $this->id = $data['id'];
         $this->model_type = $data['model_type'];
         $this->model_id = $data['model_id'];
@@ -92,7 +93,8 @@ class ProductCartItem implements Arrayable {
      * @param type $quantity
      * @return \Heesapp\Productcart\ProductCartItem
      */
-    private function CreateFromModel(Model $model, $quantity) {
+    protected function CreateFromModel(Model $model, $quantity) {
+        $this->id  = $model->id;
         $this->model_type = get_class($model);
         $this->model_id = $model->{$model->getKeyName()};
         $this->setName($model);
@@ -176,9 +178,9 @@ class ProductCartItem implements Arrayable {
             'name' => $this->name,
             'price' => $this->price,
             'image' => $this->image,
-            'quantity'=> $this->quantity,
+            'quantity' => $this->quantity,
         ];
-        if($this->id){
+        if ($this->id) {
             $CartItem['id'] = $this->id;
         }
         return $CartItem;

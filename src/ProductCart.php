@@ -18,8 +18,6 @@ use Heesapp\Productcart\Traits\DataCartable;
 use Heesapp\Productcart\Traits\DiscountCartable;
 use Heesapp\Productcart\Exceptions\ItemMissing;
 
-
-
 /**
  * Description of ProductCart
  *
@@ -127,11 +125,10 @@ class ProductCart implements Arrayable {
         $this->ProductCartDriver = $ProductCartDriver;
         $this->CartItems = collect($this->CartItems);
         if ($CartData = $this->ProductCartDriver->getCart()) {
-            $this->setCartItems($CartData['CartItems']);
-            unset($CartData['CartItems']);
+            $this->setCartItems($CartData['cart_items']);
+            unset($CartData['cart_items']);
             $this->setProperties($CartData);
         }
-        return $CartData;
     }
 
     /**
@@ -142,12 +139,13 @@ class ProductCart implements Arrayable {
         foreach ($Items as $Item) {
             $this->CartItems->push(ProductCartItem::CreateFrom($Item));
         }
+       
     }
 
     public function storeCart($IsnewItem = false) {
         $CartData = $this->toArray();
         if ($IsnewItem) {
-           
+
             $this->ProductCartDriver->storeCart($CartData, $this->CartItems->last());
         } else {
             $this->ProductCartDriver->storeCart($this->data());
@@ -187,6 +185,23 @@ class ProductCart implements Arrayable {
     }
 
     /**
+     * 
+     * @param type $displayCurrency
+     * @return type
+     */
+    private function CartItems($displayCurrency = false) {
+        $items = $this->CartItems->map->toArray();
+        if (!$displayCurrency) {
+            return $items->toArray();
+        }
+        setlocale(LC_MONETARY, config('productcart.LC_MONETARY'));
+        return $items->map(function($item) {
+                    $item['price'] = money_format('%n', $item['price']);
+                    return $item;
+                })->toArray();
+    }
+
+    /**
      * Convert Cart Object to Array
      * @param type $isItems
      * @return array
@@ -205,7 +220,7 @@ class ProductCart implements Arrayable {
             'payable' => $this->payable
         ];
         if ($isItems) {
-            $CartData['CartItems'] = $this->CartItems;
+            $CartData['CartItems'] = $this->CartItems();
         }
         if ($this->id) {
             $CartData['id'] = $this->id;
@@ -232,10 +247,9 @@ class ProductCart implements Arrayable {
             $total['net Total'] = $net_total;
         }
         $total['Tax'] = number_format($this->tax, $decimals, $dec_point, $thousands_sep);
-        if ($this->round_off !== 0) {
-            $total['Total'] = number_format($this->total, $decimals, $dec_point, $thousands_sep);
-            $total['Round Off'] = number_format($this->round_off, $decimals, $dec_point, $thousands_sep);
-        }
+        $total['Total'] = number_format($this->total, $decimals, $dec_point, $thousands_sep);
+        $total['Round Off'] = number_format($this->round_off, $decimals, $dec_point, $thousands_sep);
+
         $total['Payable'] = number_format($this->payable, $decimals, $dec_point, $thousands_sep);
         return $total;
     }
