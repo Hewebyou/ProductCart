@@ -58,6 +58,9 @@ class ProductCartServiceProvider extends ServiceProvider {
         $this->app->bind(ProductCart::class, function($app) {
             return new ProductCart($app->make(ProductCartContract::class));
         });
+        
+        $file = 'helpers.php';
+        require_once $file;
     }
 
 }

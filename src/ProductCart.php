@@ -231,8 +231,8 @@ class ProductCart implements Arrayable {
             $net_total = number_format($this->net_total, $decimals, $dec_point, $thousands_sep);
             $total['net Total'] = $net_total;
         }
-        $tax = number_format($this->tax, $decimals, $dec_point, $thousands_sep);
-        if ($this->round_off != 0) {
+        $total['Tax'] = number_format($this->tax, $decimals, $dec_point, $thousands_sep);
+        if ($this->round_off !== 0) {
             $total['Total'] = number_format($this->total, $decimals, $dec_point, $thousands_sep);
             $total['Round Off'] = number_format($this->round_off, $decimals, $dec_point, $thousands_sep);
         }

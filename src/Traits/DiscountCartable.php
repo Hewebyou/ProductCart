@@ -28,11 +28,11 @@ trait DiscountCartable {
         if ($percentage > 100) {
             throw new DiscountError("maximum of Prescentage value is 100%");
         }
-        if ($this->subtotal = 0) {
+        if ($this->subtotal == 0) {
             throw new DiscountError("Discount cannot be applied on Product added.");
         }
         $this->discout_percentage = $percentage;
-        $this->discount = round(($this->subtotal * $percentage) / 100, 2);
+        $this->discount = round(($this->subtotal) * ($percentage / 100), 2);
         $this->coupon_id = $coupon_id;
         return $this->updateCart($IsnewItem = false, $IsDiscount = true);
     }
