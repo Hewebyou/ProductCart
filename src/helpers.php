@@ -11,7 +11,7 @@ if (!function_exists('ProductCart')) {
 
     /**
      * Returns an 
-     * @return Heesweb\Laravelcarts\main\MainCart .   
+     * @return Heesapp\Productcart\ProductCart; .   
      */
     function ProductCart() : MainCart {
         return app(MainCart::class);
