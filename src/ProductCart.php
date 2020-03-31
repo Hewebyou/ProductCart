@@ -139,13 +139,14 @@ class ProductCart implements Arrayable {
         foreach ($Items as $Item) {
             $this->CartItems->push(ProductCartItem::CreateFrom($Item));
         }
-       
     }
 
     public function storeCart($IsnewItem = false) {
+        
         $CartData = $this->toArray();
+      
         if ($IsnewItem) {
-
+            
             $this->ProductCartDriver->storeCart($CartData, $this->CartItems->last());
         } else {
             $this->ProductCartDriver->storeCart($this->data());
@@ -184,22 +185,6 @@ class ProductCart implements Arrayable {
         }
     }
 
-    /**
-     * 
-     * @param type $displayCurrency
-     * @return type
-     */
-    private function CartItems($displayCurrency = false) {
-        $items = $this->CartItems->map->toArray();
-        if (!$displayCurrency) {
-            return $items->toArray();
-        }
-        setlocale(LC_MONETARY, config('productcart.LC_MONETARY'));
-        return $items->map(function($item) {
-                    $item['price'] = money_format('%n', $item['price']);
-                    return $item;
-                })->toArray();
-    }
 
     /**
      * Convert Cart Object to Array
@@ -220,7 +205,7 @@ class ProductCart implements Arrayable {
             'payable' => $this->payable
         ];
         if ($isItems) {
-            $CartData['CartItems'] = $this->CartItems();
+            $CartData['CartItems'] = $this->CartItems;
         }
         if ($this->id) {
             $CartData['id'] = $this->id;

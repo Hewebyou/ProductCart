@@ -117,7 +117,7 @@ trait ProductCartable {
      * refresh cart items of price , name , image at changed by user
      * @return array
      */
-    public function RefreshCartItems() {
+    public function refreshCart() {
         $IsDiscount = true;
 
         $this->CartItems->transform(function(ProductCartItem $item) use (&$IsDiscount) {

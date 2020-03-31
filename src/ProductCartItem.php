@@ -94,7 +94,6 @@ class ProductCartItem implements Arrayable {
      * @return \Heesapp\Productcart\ProductCartItem
      */
     protected function CreateFromModel(Model $model, $quantity) {
-        $this->id  = $model->id;
         $this->model_type = get_class($model);
         $this->model_id = $model->{$model->getKeyName()};
         $this->setName($model);

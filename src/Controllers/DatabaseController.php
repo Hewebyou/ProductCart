@@ -62,7 +62,7 @@ class DatabaseController implements ProductCartContract {
      */
     public function addCartItem($id, $CartItemData) {
 
-        $cart = Cart::find($id);
+        $cart = Cart::where('id', $id)->first();
         $CartItem = new ItemCart;
         $CartItem->model_type = $CartItemData->model_type;
         $CartItem->model_id = $CartItemData->model_id;
@@ -81,7 +81,7 @@ class DatabaseController implements ProductCartContract {
      * 
      */
     public function updateCart($id, $CartData) {
-        $cart = Cart::find($id);
+        $cart = Cart::where('id', $id)->first();
         $cart->cookie = $this->getCookieElement();
         $cart->user_id = $this->getCartIdentification();
         $cart->subtotal = $CartData['subtotal'];
@@ -162,13 +162,12 @@ class DatabaseController implements ProductCartContract {
                 ->where('cookie', $this->getCookieElement())
                 ->where('user_id', $this->getCartIdentification())
                 ->first();
-        
-         
-
         if (!$CartDate && Auth::guard(config('productcart.guard_name'))->check()) {
-            $CartDate = Cart::where('cookie', $this->getCookieElement())
+            $CartDate = $CartDate = Cart::with('CartItems')
+                    ->where('cookie', $this->getCookieElement())
                     ->first();
         }
+
         if ($CartDate) {
             $this->associateUser();
         }
@@ -194,14 +193,13 @@ class DatabaseController implements ProductCartContract {
      */
     private function getCartIdentification() {
 //assign  forign key cart_user_id to cart
-        $user_id = '';
+
         if (app()->offsetExists('cart_user_id')) {
-            $user_id = resolve('cart_user_id');
+            return resolve('cart_user_id');
         }
         if (Auth::guard(config('productcart.gurad_name'))->check()) {
-            $user_id = Auth::guard(config('productcart.guard_name'))->id();
+            return Auth::guard(config('productcart.guard_name'))->id();
         }
-        $user_id;
     }
 
     /**
@@ -240,7 +238,14 @@ class DatabaseController implements ProductCartContract {
      */
     public function storeCart($CartData, $newItem = null) {
 
-        $cart = Cart::where('cookie', $this->getCookieElement())->first();
+        $cart = Cart::where('cookie', $this->getCookieElement())
+                ->where('user_id', $this->getCartIdentification())
+                ->first();
+
+        if (!$cart && Auth::guard(config('productcart.gurad_name'))->check()) {
+            $cart = Cart::where('cookie', $this->getCookieElement())
+                    ->first();
+        }
         if (!$cart) {
             //Create Cart
             $this->addCart($CartData);
