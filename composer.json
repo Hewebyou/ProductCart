@@ -1,0 +1,36 @@
+{
+    "name": "heesapp/product-cart",
+    "description": "Cart Proudect opreation",
+    "type": "library",
+    "require": {},
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hassan Elsaied",
+            "email": "hassanelsaied80@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "classmap": [
+
+        ],
+        "psr-4": {
+            "Heesapp\\Productcart\\": "src/"
+        },
+        "files": [
+               "src/helpers.php"
+        ]
+    },
+
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Heesapp\\Productcart\\ProductCartServiceProvider" 
+            ],
+            "aliases": {
+                "Cart": "Heesapp\\Productcart\\Facades\\Carts"
+            }
+        }
+    }
+}
