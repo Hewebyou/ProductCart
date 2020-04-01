@@ -15,6 +15,7 @@ use Heesapp\Productcart\Contracts\ProductCartContract;
 use Heesapp\Productcart\Observers\Observer;
 use Heesapp\Productcart\Console\ConfigCommand;
 use Heesapp\Productcart\Console\CartTableCommands;
+use Heesapp\Productcart\Console\DriverCommand;
 
 /**
  * Description of ProductCartServiceProvider
@@ -28,10 +29,12 @@ class ProductCartServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot(): void {
-        $cofigpath = __DIR__ . '/../config/ProductCartConfig.php';
         if ($this->app->runningInConsole()) {
-            $this->publishes([$cofigpath => config_path('productcart.php')], 'ProductCartConfig');
-            $this->commands([ConfigCommand::class, CartTableCommands::class]);
+            $this->commands([
+                ConfigCommand::class,
+                CartTableCommands::class,
+                DriverCommand::class,
+            ]);
         }
         Cart::observe(Observer::class);
     }

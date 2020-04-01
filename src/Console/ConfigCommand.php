@@ -17,18 +17,37 @@ use Illuminate\Console\Command;
  */
 class ConfigCommand extends Command {
 
-    protected $signature = 'ProductCart:config';
-    protected $description = 'work a Product cart';
-//paths
+    /**
+     *
+     * @var type 
+     */
+    protected $signature = 'ProductCart:Config';
+
+    /**
+     *
+     * @var type 
+     */
+    protected $description = 'Create a Config File';
+
+    /**
+     *
+     * @var type 
+     */
     protected $package_path = __DIR__ . '/../../';
 
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     */
     public function handle() {
         $this->exportConfig();
         $this->info('File Created complete.');
     }
 
     /**
-     * Install the config file.
+     * create configuration file
+     * @return type
      */
     protected function exportConfig() {
         if (file_exists(config_path('productcart.php'))) {
@@ -40,10 +59,13 @@ class ConfigCommand extends Command {
                 $this->packagePath('config/ProductCartConfig.php'),
                 config_path('productcart.php')
         );
-
-        $this->comment('productcart.php create successfully.');
     }
 
+    /**
+     * get path
+     * @param type $path
+     * @return type
+     */
     public function packagePath($path) {
 
         return $this->package_path . $path;
