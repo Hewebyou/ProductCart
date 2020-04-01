@@ -46,7 +46,7 @@ return [
      * total price = 285$ if add tax = 6% 
      * the  total price = 285 + 285 *(6/100) = 302.1$
      */
-    'tax_precentage' => 6,
+    'tax_precentage' => 3,
     /**
      * setting round off of total price such as 
      * 99.95$+.05 =100$
@@ -56,7 +56,7 @@ return [
     /**
      * // Name of the cookie that is used to identify a user session
      */
-    'cookie_name' => 'cart_id',
+    'cookie_name' => 'cart_session',
     /**
      * cookie time  in a week 
      * 7 day * 24 hour * 60 min = 10080 sec 

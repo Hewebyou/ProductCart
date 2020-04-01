@@ -39,7 +39,7 @@ trait ProductCartable {
      * @param Model $model
      * @return Closure Description
      */
-    private function checkModelExist(Model $model): Closure {
+    protected function checkModelExist(Model $model): Closure {
         return function (ProductCartItem $item) use ($model) {
             return $item->model_type == get_class($model) &&
                     $item->model_id == $model->{$model->getKeyName()};
@@ -51,7 +51,7 @@ trait ProductCartable {
      * @param Model $model
      * @return type
      */
-    private function checkItemExist(Model $model) {
+    protected function checkItemExist(Model $model) {
         return $this->CartItems->contains($this->checkModelExist($model));
     }
 
@@ -89,7 +89,7 @@ trait ProductCartable {
         return $this->updateCart();
     }
 
-    private function checkItem($ItemIndex) {
+    protected function checkItem($ItemIndex) {
 
         if (!$this->CartItems->has($ItemIndex)) {
 
@@ -102,11 +102,11 @@ trait ProductCartable {
      * @param array $Item
      * @return array of Cart Object
      */
-    public function removeCartItem($Item) {
-        $this->checkItem($Item);
-        $Itemvalue = $this->CartItems[$Item];
+    public function removeCartItem($ItemIndex) {
+        $this->checkItem($ItemIndex);
+        $Itemvalue = $this->CartItems[$ItemIndex];
         $this->ProductCartDriver->removeCartItem($Itemvalue->id);
-        $Item = $this->CartItems->forget($Item)->values();
+        $ItemIndex = $this->CartItems->forget($ItemIndex)->values();
         $modelType = $Itemvalue->model_type;
         $modelId = $Itemvalue->model_id;
         $model = $modelType::find($modelId);

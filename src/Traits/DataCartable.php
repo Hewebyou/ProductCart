@@ -97,7 +97,7 @@ trait DataCartable {
      * 
      * @param  boolean $IsDiscount
      */
-    public function updateCartData($IsDiscount) {
+    private function updateCartData($IsDiscount) {
         $this->updataSubtotal();
         if (!$IsDiscount) {
             $this->discount = $this->discout_percentage = 0;

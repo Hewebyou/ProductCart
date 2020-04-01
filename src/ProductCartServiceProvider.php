@@ -13,6 +13,8 @@ use Heesapp\Productcart\Models\Cart;
 use Heesapp\Productcart\ProductCart;
 use Heesapp\Productcart\Contracts\ProductCartContract;
 use Heesapp\Productcart\Observers\Observer;
+use Heesapp\Productcart\Console\ConfigCommand;
+use Heesapp\Productcart\Console\CartTableCommands;
 
 /**
  * Description of ProductCartServiceProvider
@@ -27,17 +29,9 @@ class ProductCartServiceProvider extends ServiceProvider {
      */
     public function boot(): void {
         $cofigpath = __DIR__ . '/../config/ProductCartConfig.php';
-        $cartsmigration = __DIR__ . '/../database/migrations/2020_03_29_230006_create_carts_table.php';
-        $cartitemsmigration = __DIR__ . '/../database/migrations/2020_03_29_230106_create_items_cart_table.php';
         if ($this->app->runningInConsole()) {
             $this->publishes([$cofigpath => config_path('productcart.php')], 'ProductCartConfig');
-            if (!class_exists('CreateCartsTable') || !class_exists('CreateCartItemsTable')) {
-                $timestamp = date('Y_m_d_His', time());
-                $this->publishes([
-                    $cartitemsmigration => database_path('migrations/' . $timestamp . '_create_items_cart_table.php'),
-                    $cartsmigration => database_path('migrations/' . $timestamp . '_create_carts_table.php')
-                        ], 'ProuductCartmigrations');
-            }
+            $this->commands([ConfigCommand::class, CartTableCommands::class]);
         }
         Cart::observe(Observer::class);
     }
@@ -58,7 +52,7 @@ class ProductCartServiceProvider extends ServiceProvider {
         $this->app->bind(ProductCart::class, function($app) {
             return new ProductCart($app->make(ProductCartContract::class));
         });
-        
+
         $file = 'helpers.php';
         require_once $file;
     }

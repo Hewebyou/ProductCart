@@ -120,14 +120,19 @@ class DatabaseController implements ProductCartContract {
      * 
      */
     public function removeCart() {
-        $cart = Cart::where('cookie', $this->getCart())
+        $cart = Cart::where('cookie', $this->getCookieElement())
                 ->where('user_id', $this->getCartIdentification())
                 ->first();
+        if (!$cart && Auth::guard(config('productcart.guard_name'))->check()) {
+            Cart::where('cookie', $this->getCookieElement())
+                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+                    ->first();
+        }
 
         foreach ($cart->CartItems as $item) {
             $this->removeCartItem($item->id);
         }
-        $cart->delete();
+        Cart::where('id', $cart->id)->delete();
     }
 
     /**
@@ -165,6 +170,7 @@ class DatabaseController implements ProductCartContract {
         if (!$CartDate && Auth::guard(config('productcart.guard_name'))->check()) {
             $CartDate = $CartDate = Cart::with('CartItems')
                     ->where('cookie', $this->getCookieElement())
+                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
 
@@ -244,6 +250,7 @@ class DatabaseController implements ProductCartContract {
 
         if (!$cart && Auth::guard(config('productcart.gurad_name'))->check()) {
             $cart = Cart::where('cookie', $this->getCookieElement())
+                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
         if (!$cart) {

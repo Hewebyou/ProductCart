@@ -33,19 +33,19 @@ class ProductCart implements Arrayable {
      * id of Cart
      * @var type 
      */
-    public $id = null;
+    protected $id = null;
 
     /**
      *
      * @var array
      */
-    public $CartItems = [];
+    protected $CartItems = [];
 
     /**
      *
      * @var \Heesapp\Productcart\Contracts\ProductCartContract;
      */
-    public $ProductCartDriver;
+    protected $ProductCartDriver;
 
     /**
      * subtotal = price * quantity
@@ -135,13 +135,13 @@ class ProductCart implements Arrayable {
      * Create Product Object from data items
      * @param type $Items
      */
-    private function setCartItems($Items) {
+    protected function setCartItems($Items) {
         foreach ($Items as $Item) {
             $this->CartItems->push(ProductCartItem::CreateFrom($Item));
         }
     }
 
-    public function storeCart($IsnewItem = false) {
+    protected function storeCart($IsnewItem = false) {
         
         $CartData = $this->toArray();
       
@@ -159,7 +159,7 @@ class ProductCart implements Arrayable {
      * @param boolean $IsDiscount
      * @return array of Cart Object
      */
-    public function updateCart($IsnewItem = false, $IsDiscount = false) {
+    protected function updateCart($IsnewItem = false, $IsDiscount = false) {
 //updata value of Cart Object;
         $this->updateCartData($IsDiscount);
         $this->storeCart($IsnewItem);
