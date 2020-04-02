@@ -41,16 +41,16 @@ class DriverCommand extends Command {
     public function handle() {
         if ($this->option('drive') == 'database') {
             $this->updataValue(\Heesapp\Productcart\Controllers\DatabaseController::class);
-            $this->info("Driver Changed to Database Driver");
             $this->call('config:clear');
             $this->call('config:cache');
+            $this->info("Driver Changed to Database Driver");
             return;
         }
         if ($this->option('drive') == 'session') {
             $this->updataValue(\Heesapp\Productcart\Controllers\SessionController::class);
-            $this->info("Driver Changed to Session Driver");
             $this->call('config:clear');
             $this->call('config:cache');
+            $this->info("Driver Changed to Session Driver");
             return;
         }
         $this->updataValue(\Heesapp\Productcart\Controllers\DatabaseController::class);
