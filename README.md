@@ -21,7 +21,7 @@
   
   // in aliases within config/app.php add this line 
   
-  'Cart'=> Heesapp\Productcart\Facades\Carts::class,
+  'Cart'=> Heesapp\Productcart\Facades\Cart::class,
  ```
  
 # 1 Configuration 
