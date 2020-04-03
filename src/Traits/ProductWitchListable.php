@@ -83,15 +83,35 @@ trait ProductWitchListable {
         return $this->toArray();
     }
 
-    
-        /**
+    /**
      * remove value by model
      * @param Model $model
      * @return type
      */
     public function removeMWItem(Model $model) {
-        $indextId = $this->WitchListItems->search($this->checkModelExist($model));
-        $this->removeWItem($indextId);
-        return $this->toArray();
+        if ($this->checkItemExist($model)) {
+            $indextId = $this->WitchListItems->search($this->checkModelExist($model));
+            $this->removeWItem($indextId);
+            return $this->toArray();
+        }
+        throw new ItemMissing("Product {$model->id} Not found in Witch List");
     }
+
+    /**
+     * remove by item
+     * @param collection $Item
+     */
+    public function removeXWItem($Item) {
+        if ($Item) {
+            foreach ($this->WitchListItems as $key => $value) {
+                if ($value->model_id == $Item->model_id) {
+                    $this->removeWItem($key);
+                    break;
+                }
+            }
+            return $this->toArray();
+        }
+        throw new ItemMissing("Product {$Item->model_id} Not found in Witch List");
+    }
+    
 }

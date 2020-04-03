@@ -147,9 +147,12 @@ trait ProductCartable {
      * @return type
      */
     public function removeMItem(Model $model) {
-        $index = $this->CartItems->search($this->checkModelExist($model));
-        $this->removeCartItem($index);
-        return $this->updateCart();
+        if ($this->checkItemExist($model)) {
+            $index = $this->CartItems->search($this->checkModelExist($model));
+            $this->removeCartItem($index);
+            return $this->updateCart();
+        }
+        throw new ItemMissing("Proudct {$model->id} not found in Cart  ");
     }
 
     /**
@@ -158,8 +161,11 @@ trait ProductCartable {
      * @param type $quntity
      */
     public function IncrementItem(Model $model, $quantity = 1) {
-        $ItemIndex = $this->CartItems->search($this->checkModelExist($model));
-        return $this->IncrementQuntity($ItemIndex, $quantity);
+        if ($this->checkItemExist($model)) {
+            $ItemIndex = $this->CartItems->search($this->checkModelExist($model));
+            return $this->IncrementQuntity($ItemIndex, $quantity);
+        }
+        throw new ItemMissing("Proudct {$model->id} not found in Cart  ");
     }
 
     /**
@@ -169,8 +175,11 @@ trait ProductCartable {
      * @return type
      */
     public function DecrementItem(Model $model, $quntity = 1) {
-        $ItemIndex = $this->CartItems->search($this->checkModelExist($model));
-        return $this->DecrementQuntity($ItemIndex, $quntity);
+        if ($this->checkItemExist($model)) {
+            $ItemIndex = $this->CartItems->search($this->checkModelExist($model));
+            return $this->DecrementQuntity($ItemIndex, $quntity);
+        }
+        throw new ItemMissing("Proudct {$model->id} not found in Cart  ");
     }
 
     /**
@@ -186,8 +195,9 @@ trait ProductCartable {
                     break;
                 }
             }
+            return $this->toArray();
         }
-        return $this->toArray();
+        throw new ItemMissing("Proudct {$Item->model_id} not found in Cart  ");
     }
 
     /**
@@ -204,8 +214,10 @@ trait ProductCartable {
                     break;
                 }
             }
+            return $this->toArray();
         }
-        return $this->toArray();
+
+        throw new ItemMissing("Proudct {$Item->model_id} not found in Cart  ");
     }
 
     /**
@@ -223,8 +235,10 @@ trait ProductCartable {
                     break;
                 }
             }
+            return $this->toArray();
         }
-        return $this->toArray();
+        throw new ItemMissing("Proudct {$Item->model_id} not found in Cart  ");
     }
 
+    
 }
