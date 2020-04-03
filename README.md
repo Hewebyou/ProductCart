@@ -7,7 +7,14 @@
  2. opreation Cart or WitchList with Cart Item Collection
  3. opreation Cart or Witch List with Index of Collection 
  ````
- in first add this two line in app 
+ in first add this two line in app  
+ 
+ # Install
+ 
+ ```php
+ composer require heesapp/product-cart
+ ````
+ # add service provider and aliases
  ```php 
  //in provider in config/app.php add this line 
   Heesapp\Productcart\ProductCartServiceProvider::class,

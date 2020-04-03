@@ -12,7 +12,7 @@ use \Illuminate\Support\Facades\Facade;
  *
  * @author hassa
  */
-class Carts extends Facade{
+class Cart extends Facade{
 
     /**
      * Get the registered name of the component.
@@ -20,7 +20,7 @@ class Carts extends Facade{
      * @return string
      */
     protected static function getFacadeAccessor() {
-        return 'cart';
+        return 'Cart';
     }
 
 }
