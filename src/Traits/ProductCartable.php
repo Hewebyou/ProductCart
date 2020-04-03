@@ -67,7 +67,7 @@ trait ProductCartable {
         $this->CartItems[$ItemIndex]->quantity += $quntity;
 
         //set value in database
-        
+
         $this->ProductCartDriver->updateQuantity(
                 $this->CartItems[$ItemIndex]->id,
                 $this->CartItems[$ItemIndex]->quantity);
@@ -75,12 +75,11 @@ trait ProductCartable {
     }
 
     public function DecrementQuntity($ItemIndex, $quntity = 1) {
-
         $this->checkItem($ItemIndex);
         if ($this->CartItems[$ItemIndex]->quantity < $quntity) {
-            $this->removeCartItem($ItemIndex);
+            return $this->removeCartItem($ItemIndex);
         }
-        $this->CartItems[$ItemIndex]->quantity -= $quntity;
+        $this->CartItems[$ItemIndex]->quantity = $this->CartItems[$ItemIndex]->quantity - $quntity;
 
         $id = $this->CartItems[$ItemIndex]->id;
 
@@ -89,6 +88,11 @@ trait ProductCartable {
         return $this->updateCart();
     }
 
+    /**
+     * 
+     * @param type $ItemIndex
+     * @throws ItemMissing
+     */
     protected function checkItem($ItemIndex) {
 
         if (!$this->CartItems->has($ItemIndex)) {
@@ -105,7 +109,7 @@ trait ProductCartable {
     public function removeCartItem($ItemIndex) {
         $this->checkItem($ItemIndex);
         $Itemvalue = $this->CartItems[$ItemIndex];
-        $this->ProductCartDriver->removeCartItem($Itemvalue->id);
+        $this->ProductCartDriver->removeCartItem($Itemvalue->id, false);
         $ItemIndex = $this->CartItems->forget($ItemIndex)->values();
         $modelType = $Itemvalue->model_type;
         $modelId = $Itemvalue->model_id;
@@ -134,6 +138,92 @@ trait ProductCartable {
         $this->ProductCartDriver->updataCartItems($this->CartItems);
         $this->updateCartData($IsDiscount);
         $this->ProductCartDriver->updateCart($this->id, $this->data());
+        return $this->toArray();
+    }
+
+    /**
+     * 
+     * @param Model $model
+     * @return type
+     */
+    public function removeMItem(Model $model) {
+        $index = $this->CartItems->search($this->checkModelExist($model));
+        $this->removeCartItem($index);
+        return $this->updateCart();
+    }
+
+    /**
+     * Increment quantity item by model
+     * @param Model $model
+     * @param type $quntity
+     */
+    public function IncrementItem(Model $model, $quantity = 1) {
+        $ItemIndex = $this->CartItems->search($this->checkModelExist($model));
+        return $this->IncrementQuntity($ItemIndex, $quantity);
+    }
+
+    /**
+     * Decrement quantity item by model
+     * @param Model $model
+     * @param type $quntity
+     * @return type
+     */
+    public function DecrementItem(Model $model, $quntity = 1) {
+        $ItemIndex = $this->CartItems->search($this->checkModelExist($model));
+        return $this->DecrementQuntity($ItemIndex, $quntity);
+    }
+
+    /**
+     * Remove Item by Cart Item 
+     * @param ProductCartItem $Item
+     * @return type
+     */
+    public function removeXItem($Item) {
+        if ($Item) {
+            foreach ($this->CartItems as $key => $Itemvalue) {
+                if ($Itemvalue->model_id == $Item->model_id) {
+                    $this->removeCartItem($key);
+                    break;
+                }
+            }
+        }
+        return $this->toArray();
+    }
+
+    /**
+     * Decrement Item by Database
+     * @param type $Item
+     * @param type $quantity
+     * @return type
+     */
+    public function DecremenXtItem($Item, $quantity = 1) {
+        if ($Item) {
+            foreach ($this->CartItems as $key => $Itemvalue) {
+                if ($Itemvalue->model_id == $Item->model_id) {
+                    $this->Quntity($key, $quantity);
+                    break;
+                }
+            }
+        }
+        return $this->toArray();
+    }
+
+    /**
+     * Increment Item by Cart Item Database
+     * 
+     * @param type $Item
+     * @param type $quantity
+     * @return type
+     */
+    public function IncremenXtItem($Item, $quantity = 1) {
+        if ($Item) {
+            foreach ($this->CartItems as $key => $Itemvalue) {
+                if ($Itemvalue->model_id == $Item->model_id) {
+                    $this->IncrementQuntity($key, $quantity);
+                    break;
+                }
+            }
+        }
         return $this->toArray();
     }
 

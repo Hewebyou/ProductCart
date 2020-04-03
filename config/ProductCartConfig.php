@@ -54,9 +54,11 @@ return [
      */
     'round_off' => .05,
     /**
-     * // Name of the cookie that is used to identify a user session
+     * Name of the cookie that is used to identify a user session
      */
     'cookie_name' => 'cart_session',
+  
+ 
     /**
      * cookie time  in a week 
      * 7 day * 24 hour * 60 min = 10080 sec 

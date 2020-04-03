@@ -31,7 +31,7 @@ class CartTableCommands extends Command {
      *
      * @var string
      */
-    protected $description = 'Create a migration for the ProductCart tables';
+    protected $description = 'Create a migration for the Product Cart tables';
 
     /**
      * The filesystem instance.
@@ -65,10 +65,15 @@ class CartTableCommands extends Command {
      * @return void
      */
     public function handle() {
+
         $this->createCartsTable();
-        $this->info('Migration  Carts table created successfully!');
+
+        $this->info('Migration  Cart table created successfully!');
+
         $this->createItemsTable();
+
         $this->info('Migration  Cart Items table created successfully!');
+
         $this->composer->dumpAutoloads();
     }
 
@@ -76,14 +81,20 @@ class CartTableCommands extends Command {
      * create cart table
      */
     protected function createCartsTable() {
+
         $fullPath = $this->createCartBaseMigration();
+
         $cartsmigration = $this->files->get(__DIR__ . '/stub/carts.stub');
+
         $this->files->put($fullPath, $cartsmigration);
     }
 
     protected function createItemsTable() {
+
         $fullpath = $this->createItemsCartBaseMigration();
+
         $cartitemsmigration = $this->files->get(__DIR__ . '/stub/items_cart.stub');
+
         $this->files->put($fullpath, $cartitemsmigration);
     }
 

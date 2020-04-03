@@ -17,6 +17,7 @@ use Heesapp\Productcart\Traits\ProductCartable;
 use Heesapp\Productcart\Traits\DataCartable;
 use Heesapp\Productcart\Traits\DiscountCartable;
 use Heesapp\Productcart\Exceptions\ItemMissing;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Description of ProductCart
@@ -142,11 +143,11 @@ class ProductCart implements Arrayable {
     }
 
     protected function storeCart($IsnewItem = false) {
-        
+
         $CartData = $this->toArray();
-      
+
         if ($IsnewItem) {
-            
+
             $this->ProductCartDriver->storeCart($CartData, $this->CartItems->last());
         } else {
             $this->ProductCartDriver->storeCart($this->data());
@@ -184,7 +185,6 @@ class ProductCart implements Arrayable {
             $this->{Str::camel($key)} = $value;
         }
     }
-
 
     /**
      * Convert Cart Object to Array
@@ -281,5 +281,7 @@ class ProductCart implements Arrayable {
 
         throw new BadMethodCallException('Method [{$method}] does not exist. Check documentation please.');
     }
+
+ 
 
 }

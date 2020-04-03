@@ -25,11 +25,12 @@ interface ProductCartContract {
     /**
      * Cart Item add to Database CartItem or session CartItem
      * 
-     * @param int $id  of Cart  this item cart to add into cart 
+     * @param int $id  of Cart  or WitchList 
      * @param array $CartItemData CartItem data to store
+     * @param boolean $type Description $type determined this id in cart if false if true is a store in WitchList
      * @return type Description
      */
-    public function addCartItem($id, $CartItemData);
+    public function addCartItem($id, $CartItemData, $type);
 
     /**
      * Cart  update by Id selected
@@ -57,9 +58,9 @@ interface ProductCartContract {
     /**
      * Remove Cart item by id 
      * @param int $id id of CartItem
-     * @return type Description
+     * @param boolean $type remove from cart or witchList
      */
-    public function removeCartItem($id);
+    public function removeCartItem($id, $type);
 
     /**
      * update quantity of Item
@@ -90,4 +91,53 @@ interface ProductCartContract {
      * @return type Description
      */
     public function updataCartItems($items);
+
+    /**
+     * create the witchList
+     * 
+     * @param int $WithListData
+     * @return array Description
+     */
+    public function addWitchList($WithListData);
+
+    /**
+     * remove witch list session by id 
+     * 
+     * @param type $id
+     * @return type Description
+     */
+    public function removeWitchList();
+
+    /**
+     * get witch List by cookie
+     * @return type Description
+     */
+    public function getWitchList();
+
+    /**
+     * store determined the WitchList update or create
+     * 
+     * @param type $WitchListData
+     * @param type $newItem
+     * @return type Description
+     */
+    public function storeWitchList($WitchListData, $newItem = null);
+
+    /**
+     * move item from witch list to cart
+     * 
+     * @param type $id
+     * @param $cart_id 
+     * @return type Description
+     */
+    public function moveToCart($id, $cart_id);
+
+    /**
+     * move Item From cart To WitchList 
+     * 
+     * @param type $id
+     * @param $witchList_id 
+     * @return type Description
+     */
+    public function moveToWitchList($id, $witchList_id);
 }

@@ -10,7 +10,7 @@ namespace Heesapp\Productcart\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Heesapp\Productcart\Models\ItemCart;
-
+use Heesapp\Productcart\Models\WitchlistItem;
 /**
  * Description of CartModel
  *
@@ -46,14 +46,34 @@ use Heesapp\Productcart\Models\ItemCart;
  * @mixin \Eloquent
  */
 class Cart extends Model {
+    /**
+     *
+     * @var type 
+     */
     protected  $table = 'carts';
+    /**
+     *
+     * @var type 
+     */
     protected $fillable = [
         'cookie', 'user_id', 'subtotal', 'discount', 'discout_percentage', 'coupon_id',
         'shipping_charges', 'net_total', 'tax', 'total', 'round_off', 'payable'
     ];
 
+    /**
+     * 
+     * @return type
+     */
     public function CartItems() {
         return $this->hasMany(ItemCart::class);
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function WitchLists() {
+        return $this->hasMany(WitchlistItem::class);
     }
 
 }
