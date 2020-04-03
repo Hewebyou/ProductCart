@@ -92,7 +92,7 @@ example
 # 2 Cart Opreation 
 this opreation is :
 ```
-1.add product to Product 
+1.add product to Cart 
 2.move to WitchList 
 3.Clear Cart 
 4.Incremment Item quantity  
