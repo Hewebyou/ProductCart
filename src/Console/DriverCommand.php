@@ -24,8 +24,8 @@ class DriverCommand extends Command {
      *
      * @var type 
      */
-    protected $signature = 'ProductCart:Driver ' .
-            '{--drive= :Product Cart assign value of the driver ,Available type: none, session, database}';
+    protected $signature = 'ProductCart:Driver' .
+            '{--driver= :Product Cart assign value of the driver ,Available type: none, session, database}';
 
     /**
      *
@@ -39,14 +39,14 @@ class DriverCommand extends Command {
      * @return void
      */
     public function handle() {
-        if ($this->option('drive') == 'database') {
+        if ($this->option('driver') == 'database') {
             $this->updataValue(\Heesapp\Productcart\Controllers\DatabaseController::class);
             $this->call('config:clear');
             $this->call('config:cache');
             $this->info("Driver Changed to Database Driver");
             return;
         }
-        if ($this->option('drive') == 'session') {
+        if ($this->option('driver') == 'session') {
             $this->updataValue(\Heesapp\Productcart\Controllers\SessionController::class);
             $this->call('config:clear');
             $this->call('config:cache');
