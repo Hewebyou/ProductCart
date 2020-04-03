@@ -113,5 +113,45 @@ trait ProductWitchListable {
         }
         throw new ItemMissing("Product {$Item->model_id} Not found in Witch List");
     }
-    
+
+    /**
+     * move to cart  by index
+     * @param type $Index
+     * @return type
+     */
+    public function moveToCart($Index) {
+        $this->checkItem($Index);
+        $value = $this->WitchListItems[$Index];
+        $this->ProductCartDriver->moveToCart($value->id);
+        $Index = $this->WitchListItems->forget($Index)->values();
+        return $this->updateWitchList();
+    }
+
+    /**
+     * move to cart by model
+     * @param Model $model
+     * @return type
+     * @throws ItemMissing
+     */
+    public function moveMToCart(Model $model) {
+        if ($this->checkItemExist($model)) {
+            $index = $this->WitchListItems->search($this->checkModelExist($model));
+            return $this->moveToCart($index);
+        }
+        throw new ItemMissing("Product {$model->model_id} Not found in Witch List");
+    }
+
+    public function moveXToCart($Item) {
+        if ($Item) {
+            foreach ($this->WitchListItems as $key => $item) {
+                if ($item->model_id == $Item->model_id) {
+                    $this->moveToCart($key);
+                    break;
+                }
+            }
+            return $this->toArray();
+        }
+        throw new ItemMissing("Product {$Item->model_id} Not found in Witch List");
+    }
+
 }

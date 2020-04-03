@@ -282,6 +282,6 @@ class ProductCart implements Arrayable {
         throw new BadMethodCallException('Method [{$method}] does not exist. Check documentation please.');
     }
 
- 
+
 
 }

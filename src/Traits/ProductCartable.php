@@ -240,5 +240,51 @@ trait ProductCartable {
         throw new ItemMissing("Proudct {$Item->model_id} not found in Cart  ");
     }
 
-    
+    /**
+     * move to witch list by index
+     * @param type $Index
+     * @return type
+     */
+    public function moveToWitchList($Index) {
+        $this->checkItem($Index);
+        $value = $this->CartItems[$Index];
+        $this->ProductCartDriver->moveToWitchList($value->id);
+        $Index = $this->CartItems->forget($Index)->values();
+        return $this->updateCart();
+    }
+
+    /**
+     * move to witchList by model
+     * @param Model $model
+     * @return type
+     * @throws ItemMissing
+     */
+    public function moveMToWitchList(Model $model) {
+        if ($this->checkItemExist($model)) {
+            $index = $this->CartItems->search($this->checkModelExist($model));
+            return $this->moveToWitchList($index);
+        }
+        throw new ItemMissing("Product {$model->id} not found");
+    }
+
+    /**
+     * move cart by item
+     * 
+     * @param type $Item
+     * @return type
+     * @throws ItemMissing
+     */
+    public function moveXToWitchList($Item) {
+        if ($Item) {
+            foreach ($this->CartItems as $key => $value) {
+                if ($value->model_id == $Item->model_id) {
+                    $this->moveToWitchList($key);
+                    break;
+                }
+            }
+            return $this->toArray();
+        }
+        throw new ItemMissing("Proudct {$Item->model_id} not found in Cart  ");
+    }
+
 }

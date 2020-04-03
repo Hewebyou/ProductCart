@@ -164,6 +164,7 @@ class DatabaseController implements ProductCartContract {
                         ->first();
             }
             if ($cart) {
+                $this->associateUser();
                 ItemCart::where('id', $id)->where('cart_id', $cart->id)->delete();
             }
         } else {
@@ -176,6 +177,7 @@ class DatabaseController implements ProductCartContract {
                         ->first();
             }
             if ($witchList) {
+                $this->associateUser();
                 ItemCart::where('id', $id)->where('witchlist_id', $witchList->id)->delete();
             }
         }
@@ -205,15 +207,14 @@ class DatabaseController implements ProductCartContract {
                 ->where('user_id', $this->getCartIdentification())
                 ->first();
         if (!$CartDate && Auth::guard(config('productcart.guard_name'))->check()) {
+            $this->associateUser();
             $CartDate = $CartDate = Cart::with('CartItems')
                     ->where('cookie', $this->getCookieElement())
                     ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
 
-        if ($CartDate) {
-            $this->associateUser();
-        }
+
         if (!$CartDate) {
             return [];
         }
@@ -286,8 +287,11 @@ class DatabaseController implements ProductCartContract {
 
     protected function associateUser() {
         $cart = Cart::where('cookie', $this->getCookieElement())->first();
+        $witchList = Witchlist::where('cookie', $this->getCookieElement())->first();
         $cart->user_id = Auth::guard(config('productcart.guard_name'))->id();
         $cart->update();
+        $witchList->user_id = Auth::guard(config('productcart.guard_name'))->id();
+        $witchList->update();
     }
 
     /**
@@ -369,13 +373,11 @@ class DatabaseController implements ProductCartContract {
         }
         if ($witchList) {
             foreach ($witchList->WitchLists as $Item) {
-                $this->removeCartItem($Item->id , true);
+                $this->removeCartItem($Item->id, true);
             }
             return Witchlist::where('id', $witchList->id)->delete();
         }
     }
-
- 
 
     /**
      * store determined the WitchList update or create
@@ -412,14 +414,14 @@ class DatabaseController implements ProductCartContract {
                 ->where('user_id', $this->getWithListIdentification())
                 ->first();
         if (!$WitchListData && Auth::guard(config('productcart.guard_name'))->check()) {
+            $this->associateUser();
             $WitchListData = Witchlist::with('WitchLists')
                     ->where('cookie', $this->getCookieElement())
                     ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
-        if ($WitchListData) {
-            $this->associateUser();
-        }
+
+
         if (!$WitchListData) {
             return [];
         }
@@ -432,13 +434,24 @@ class DatabaseController implements ProductCartContract {
      * @param type $id
      * @return type Description
      */
-    public function moveToCart($id, $cart_id) {
-        $Cart = Cart::where('id', $cart_id)->first();
-        $Item = ItemCart::where('id', $id)->first();
-        if ($Item && $Item->witchlist_id != null) {
-            $Item->Cart()->associate($Cart);
-            $Item->WitchList()->dissociate();
-            $Item->update();
+    public function moveToCart($id) {
+        $Cart = Cart::where('cookie', $this->getCookieElement())
+                ->where('user_id', $this->getCartIdentification())
+                ->first();
+        if (!$Cart && Auth::guard(config('productcart.guard_name'))->check()) {
+            $Cart = Cart::where('cookie', $this->getCookieElement())
+                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+                    ->first();
+        }
+
+        if ($Cart) {
+
+            $Item = ItemCart::where('id', $id)->first();
+            if ($Item && $Item->witchlist_id != null) {
+                $Item->Cart()->associate($Cart);
+                $Item->WitchList()->dissociate();
+                $Item->update();
+            }
         }
     }
 
@@ -448,13 +461,22 @@ class DatabaseController implements ProductCartContract {
      * @param type $id
      * @return type Description
      */
-    public function moveToWitchList($id, $witchList_id) {
-        $WitchList = Witchlist::where('id', $witchList_id)->first();
-        $Item = ItemCart::where('id', $id)->first();
-        if ($Item && $Item->cart_id != null) {
-            $Item->Cart()->dissociate();
-            $Item->WitchList()->associate($WitchList);
-            $Item->update();
+    public function moveToWitchList($id) {
+        $WitchList = Witchlist::where('cookie', $this->getCookieElement())
+                ->where('user_id', $this->getWithListIdentification())
+                ->first();
+        if (!$WitchList && Auth::guard(config('productcart.guard_name'))->check()) {
+            $WitchList = Witchlist::where('cookie', $this->getCookieElement())
+                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+                    ->first();
+        }
+        if ($WitchList) {
+            $Item = ItemCart::where('id', $id)->first();
+            if ($Item && $Item->cart_id != null) {
+                $Item->Cart()->dissociate();
+                $Item->WitchList()->associate($WitchList);
+                $Item->update();
+            }
         }
     }
 

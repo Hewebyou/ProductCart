@@ -58,4 +58,14 @@ trait Cartable {
         return app(ProductCart::class)->DecrementItem($class::findOrFail($id), $quantity);
     }
 
+    /**
+     * move class by model 
+     * @param type $id
+     * @return type
+     */
+    public static function moveToWitchList($id) {
+        $class = static::class;
+        return app(ProductCart::class)->moveMToWitchList($class::findOrFail($id));
+    }
+
 }

@@ -28,9 +28,26 @@ trait WitchListable {
         return app(ProductWitchList::class)->addWhitcList($class::findOrFail($id));
     }
 
-    public static function RemoveFromWitchList($id) {
+    /**
+     * remove item by id
+     * 
+     * @param type $id
+     * @return type
+     */
+    public static function removeFromWitchList($id) {
         $class = static ::class;
         return app(ProductWitchList::class)->removeMWItem($class::findOrFail($id));
+    }
+
+    /**
+     * move Item to cart
+     * 
+     * @param int $id
+     * @return type
+     */
+    public static function moveToCart($id) {
+        $class = static::class;
+        return app(ProductWitchList::class)->moveMToCart($class::findOrFail($id));
     }
 
 }

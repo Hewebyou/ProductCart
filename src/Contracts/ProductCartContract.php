@@ -127,17 +127,15 @@ interface ProductCartContract {
      * move item from witch list to cart
      * 
      * @param type $id
-     * @param $cart_id 
      * @return type Description
      */
-    public function moveToCart($id, $cart_id);
+    public function moveToCart($id);
 
     /**
      * move Item From cart To WitchList 
      * 
      * @param type $id
-     * @param $witchList_id 
      * @return type Description
      */
-    public function moveToWitchList($id, $witchList_id);
+    public function moveToWitchList($id);
 }
