@@ -7,6 +7,16 @@
  2. opreation Cart or WitchList with Cart Item Collection
  3. opreation Cart or Witch List with Index of Collection 
  ````
+ in first add this two line in app 
+ ```php 
+ //in provider in config/app.php add this line 
+  Heesapp\Productcart\ProductCartServiceProvider::class,
+  
+  // in aliases within config/app.php add this line 
+  
+  'Cart'=> Heesapp\Productcart\Facades\Carts::class,
+ ```
+ 
 # 1 Configuration 
 1.this Package can work with to session or Database by Driver attribute value in config file productcart.php
 2.the configuration can migration an Cart Table and Cart Items Table by one command and migration the witch List Table
