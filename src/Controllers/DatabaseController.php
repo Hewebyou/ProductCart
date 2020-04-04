@@ -207,14 +207,15 @@ class DatabaseController implements ProductCartContract {
                 ->where('user_id', $this->getCartIdentification())
                 ->first();
         if (!$CartDate && Auth::guard(config('productcart.guard_name'))->check()) {
-            $this->associateUser();
-            $CartDate = $CartDate = Cart::with('CartItems')
+            $CartDate = Cart::with('CartItems')
                     ->where('cookie', $this->getCookieElement())
                     ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
 
-
+        if ($CartDate) {
+            $this->associateUser();
+        }
         if (!$CartDate) {
             return [];
         }
@@ -418,13 +419,15 @@ class DatabaseController implements ProductCartContract {
                 ->where('user_id', $this->getWithListIdentification())
                 ->first();
         if (!$WitchListData && Auth::guard(config('productcart.guard_name'))->check()) {
-            $this->associateWUser();
             $WitchListData = Witchlist::with('WitchLists')
                     ->where('cookie', $this->getCookieElement())
                     ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
-
+     
+        if($WitchListData){
+           $this->associateWUser(); 
+        }
 
         if (!$WitchListData) {
             return [];
