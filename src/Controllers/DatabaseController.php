@@ -13,8 +13,6 @@ use Auth;
 use Heesapp\Productcart\Models\Cart;
 use Heesapp\Productcart\Models\ItemCart;
 use Heesapp\Productcart\Models\Witchlist;
-use Heesapp\Productcart\Models\WitchlistItem;
-use Heesapp\Productcart\Exceptions\ItemMissing;
 use Heesapp\Productcart\Contracts\ProductCartContract;
 use Illuminate\Support\Facades\Cookie;
 
@@ -136,8 +134,7 @@ class DatabaseController implements ProductCartContract {
                 ->where('user_id', $this->getCartIdentification())
                 ->first();
         if (!$cart && Auth::guard(config('productcart.guard_name'))->check()) {
-            Cart::where('cookie', $this->getCookieElement())
-                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+            $cart = Cart::where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
 
@@ -159,12 +156,10 @@ class DatabaseController implements ProductCartContract {
                     ->first();
 
             if (!$cart && Auth::guard(config('productcart.guard_name'))->check()) {
-                Cart::where('cookie', $this->getCookieElement())
-                        ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+                $cart = Cart::where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                         ->first();
             }
             if ($cart) {
-                $this->associateUser();
                 ItemCart::where('id', $id)->where('cart_id', $cart->id)->delete();
             }
         } else {
@@ -172,12 +167,10 @@ class DatabaseController implements ProductCartContract {
                     ->where('user_id', $this->getWithListIdentification())
                     ->first();
             if (!$witchList && Auth::guard(config('productcart.guard_name'))->check()) {
-                $witchList = Witchlist::where('cookie', $this->getCookieElement())
-                        ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+                $witchList = Witchlist::where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                         ->first();
             }
             if ($witchList) {
-                $this->associateUser();
                 ItemCart::where('id', $id)->where('witchlist_id', $witchList->id)->delete();
             }
         }
@@ -206,16 +199,18 @@ class DatabaseController implements ProductCartContract {
                 ->where('cookie', $this->getCookieElement())
                 ->where('user_id', $this->getCartIdentification())
                 ->first();
-        if (!$CartDate && Auth::guard(config('productcart.guard_name'))->check()) {
-            $CartDate = Cart::with('CartItems')
-                    ->where('cookie', $this->getCookieElement())
-                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
-                    ->first();
-        }
 
         if ($CartDate) {
             $this->associateUser();
         }
+
+        if (!$CartDate && Auth::guard(config('productcart.guard_name'))->check()) {
+            $CartDate = Cart::with('CartItems')
+                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+                    ->first();
+        }
+
+
         if (!$CartDate) {
             return [];
         }
@@ -311,8 +306,7 @@ class DatabaseController implements ProductCartContract {
                 ->first();
 
         if (!$cart && Auth::guard(config('productcart.gurad_name'))->check()) {
-            $cart = Cart::where('cookie', $this->getCookieElement())
-                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+            $cart = Cart::where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
         if (!$cart) {
@@ -396,8 +390,7 @@ class DatabaseController implements ProductCartContract {
                 ->where('user_id', $this->getWithListIdentification())
                 ->first();
         if (!$witchList && Auth::guard(config('productcart.guard_name'))->check()) {
-            $witchList = Witchlist::where('cookie', $this->getCookieElement())
-                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+            $witchList = Witchlist::where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
         if (!$witchList) {
@@ -418,16 +411,16 @@ class DatabaseController implements ProductCartContract {
                 ->where('cookie', $this->getCookieElement())
                 ->where('user_id', $this->getWithListIdentification())
                 ->first();
+        if ($WitchListData) {
+            $this->associateWUser();
+        }
         if (!$WitchListData && Auth::guard(config('productcart.guard_name'))->check()) {
             $WitchListData = Witchlist::with('WitchLists')
-                    ->where('cookie', $this->getCookieElement())
                     ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
-     
-        if($WitchListData){
-           $this->associateWUser(); 
-        }
+
+
 
         if (!$WitchListData) {
             return [];
@@ -446,8 +439,8 @@ class DatabaseController implements ProductCartContract {
                 ->where('user_id', $this->getCartIdentification())
                 ->first();
         if (!$Cart && Auth::guard(config('productcart.guard_name'))->check()) {
-            $Cart = Cart::where('cookie', $this->getCookieElement())
-                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+            $Cart = Cart::
+                    where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
 
@@ -473,8 +466,8 @@ class DatabaseController implements ProductCartContract {
                 ->where('user_id', $this->getWithListIdentification())
                 ->first();
         if (!$WitchList && Auth::guard(config('productcart.guard_name'))->check()) {
-            $WitchList = Witchlist::where('cookie', $this->getCookieElement())
-                    ->where('user_id', Auth::guard(config('productcart.guard_name'))->id())
+            $WitchList = Witchlist::
+                    where('user_id', Auth::guard(config('productcart.guard_name'))->id())
                     ->first();
         }
         if ($WitchList) {
