@@ -147,10 +147,9 @@ class ProductCart implements Arrayable {
         $CartData = $this->toArray();
 
         if ($IsnewItem) {
-
             $this->ProductCartDriver->storeCart($CartData, $this->CartItems->last());
         } else {
-            $this->ProductCartDriver->storeCart($this->data());
+            $this->ProductCartDriver->storeCart($CartData);
         }
     }
 
@@ -172,6 +171,7 @@ class ProductCart implements Arrayable {
      * @return array
      */
     public function data() {
+
         return $this->toArray($withItems = false);
     }
 
@@ -192,17 +192,18 @@ class ProductCart implements Arrayable {
      * @return array
      */
     public function toArray($isItems = true): array {
+//           
         $CartData = [
             'subtotal' => $this->subtotal,
             'discount' => $this->discount,
             'discout_percentage' => $this->discout_percentage,
             'coupon_id' => $this->coupon_id,
             'shipping_charges' => $this->shipping_charges,
-            'net_total' => $this->net_total,
+            'net_total' => round($this->subtotal - $this->discount + $this->shipping_charges, 2),
             'tax' => $this->tax,
             'total' => $this->total,
             'round_off' => $this->round_off,
-            'payable' => $this->payable
+            'payable' => $this->payable,
         ];
         if ($isItems) {
             $CartData['CartItems'] = $this->CartItems;
@@ -281,7 +282,5 @@ class ProductCart implements Arrayable {
 
         throw new BadMethodCallException('Method [{$method}] does not exist. Check documentation please.');
     }
-
-
 
 }

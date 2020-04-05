@@ -8,6 +8,7 @@
 
 namespace Heesapp\Productcart\Traits;
 use Heesapp\Productcart\ProductCartItem;
+use Heesapp\Productcart\Exceptions\ItemMissing;
 /**
  * Description of DataCartabl
  *
@@ -104,6 +105,7 @@ trait DataCartable {
             $this->coupon_id = null;
         }
         $this->updateShippingCharges();
+   
         $this->net_total = round($this->subtotal - $this->discount + $this->shipping_charges, 2);
         $this->tax = round($this->net_total * config('productcart.tax_precentage') / 100, 2);
         $this->total = round($this->net_total + $this->tax, 2);
