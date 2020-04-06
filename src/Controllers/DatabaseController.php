@@ -277,15 +277,15 @@ class DatabaseController implements ProductCartContract {
     }
 
     protected function associateUser() {
-        $cart = Cart::where('cookie', $this->getCookieElement())->first();
-        $cart->user_id = Auth::guard(config('productcart.guard_name'))->id();
-        $cart->update();
+        $cart = Cart::where('cookie', $this->getCookieElement())->update([
+            'user_id' => Auth::guard(config('productcart.guard_name'))->id()
+        ]);
     }
 
     protected function associateWUser() {
-        $witchList = Witchlist::where('cookie', $this->getCookieElement())->first();
-        $witchList->user_id = Auth::guard(config('productcart.guard_name'))->id();
-        $witchList->update();
+        $witchList = Witchlist::where('cookie', $this->getCookieElement())->update([
+            'user_id' => Auth::guard(config('productcart.guard_name'))->id()
+        ]);
     }
 
     /**

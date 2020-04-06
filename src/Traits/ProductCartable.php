@@ -12,7 +12,7 @@ use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Heesapp\Productcart\ProductCartItem;
 use Heesapp\Productcart\Exceptions\ItemMissing;
-
+use Heesapp\Productcart\ProductWitchList;
 trait ProductCartable {
 
     /**
